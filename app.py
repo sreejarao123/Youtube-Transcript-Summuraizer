@@ -113,7 +113,29 @@ def transcript_fetched_query():
                        message="No Video ID Passed. " "Please check that you have added id in your request correctly.",
                        response=None), 400
     elif percent is None:
-        # percent parameter doesn't exist.
+        # percent parameter doesn't exist.app = Flask(__name__)
+
+
+@app.route('/summarize/')
+def transcript_fetched_query():
+    # Getting argument from the request
+    video_id = request.args.get('id')  # video_id of the YouTube Video
+    percent = request.args.get('percent')  # percentage of the summary
+    choice = request.args.get('choice')  # summarization choice
+
+    # Checking whether all parameters exist or not
+    if video_id is not None and percent is not None and choice is not None:
+        # every parameter exists here: checking validity of choice
+        choice_list = ["gensim-sum", "spacy-sum", "nltk-sum", "sumy-lsa-sum", "sumy-luhn-sum", "sumy-text-rank-sum"]
+        if choice in choice_list:
+            # Choice Correct Proceeding with Transcript Fetch and its Summarization
+            try:
+                # Using Formatter to store subtitles properly.
+                formatter = TextFormatter()
+                transcript = YouTubeTranscriptApi.get_transcript(video_id)
+                formatted_text = formatter.format_transcript(transcript).replace("\n", " ")
+
+                # Summarizing Formatt
         return jsonify(success=False,
                        message="No Percentage Value given in request. " "Please check whether your request is correct.",
                        response=None), 400
