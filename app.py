@@ -128,6 +128,8 @@ def create_app():
                            message="No Percentage Value given in request. "
                                    "Please check whether your request is correct.",
                            response=None), 400
+                           else:
+                            #choice parameter for the summary type doesnt exist here
 
     elif video_id is None:
         # video_id parameter doesn't exist in the request.
@@ -138,26 +140,8 @@ def create_app():
         # percent parameter doesn't exist.app = Flask(__name__)
 
 
-@app.route('/summarize/')
-def transcript_fetched_query():
-    # Getting argument from the request
-    video_id = request.args.get('id')  # video_id of the YouTube Video
-    percent = request.args.get('percent')  # percentage of the summary
-    choice = request.args.get('choice')  # summarization choice
 
-    # Checking whether all parameters exist or not
-    if video_id is not None and percent is not None and choice is not None:
-        # every parameter exists here: checking validity of choice
-        choice_list = ["gensim-sum", "spacy-sum", "nltk-sum", "sumy-lsa-sum", "sumy-luhn-sum", "sumy-text-rank-sum"]
-        if choice in choice_list:
-            # Choice Correct Proceeding with Transcript Fetch and its Summarization
-            try:
-                # Using Formatter to store subtitles properly.
-                formatter = TextFormatter()
-                transcript = YouTubeTranscriptApi.get_transcript(video_id)
-                formatted_text = formatter.format_transcript(transcript).replace("\n", " ")
-
-                # Summarizing Formatt
+                    # Summarizing Formatt
         return jsonify(success=False,
                        message="No Percentage Value given in request. " "Please check whether your request is correct.",
                        response=None), 400
@@ -166,6 +150,7 @@ def transcript_fetched_query():
         return jsonify(success=False,
                        message="No Choice given in request. " "Please request along with your choice correctly.",
                        response=None), 400
+                       return app
 
 
 def gensim_summarize(text_content, percent):
@@ -385,4 +370,6 @@ if __name__ == '__main__':
         nltk.download('wordnet')
 
     # Running Flask Application
-    app.run()
+# app.run()
+    flask_app = create_app()
+    serve(flask_app, host='0.0.0.0', port=80, debug=True, url_scheme='https')
