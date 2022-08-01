@@ -115,13 +115,18 @@ def create_app():
                  return jsonify(success=False,
                               message="Invalid Choice: Please create your request with correct choice.",
                                response=None), 400
-            except:
-                return jsonify(success=False, message="Some error occurred."
-                                                      " Contact the administrator if it is happening too frequently.",
-                               response=None), 500
-        else:
+            
+                                   elif video_id is None:
+            # video_id parameter doesn't exist in the request.
             return jsonify(success=False,
-                           message="Invalid Choice: Please create your request with correct choice.",
+                           message="No Video ID Passed. "
+                                   "Please check that you have added id in your request correctly.",
+                           response=None), 400
+        elif percent is None:
+            # percent parameter doesn't exist.
+            return jsonify(success=False,
+                           message="No Percentage Value given in request. "
+                                   "Please check whether your request is correct.",
                            response=None), 400
 
     elif video_id is None:
