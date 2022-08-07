@@ -27,6 +27,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 
 # Other Imports
+
 from string import punctuation
 from heapq import nlargest
 
@@ -130,26 +131,10 @@ def create_app():
                            response=None), 400
                            else:
                             #choice parameter for the summary type doesnt exist here
-
-    elif video_id is None:
-        # video_id parameter doesn't exist in the request.
-        return jsonify(success=False,
-                       message="No Video ID Passed. " "Please check that you have added id in your request correctly.",
-                       response=None), 400
-    elif percent is None:
-        # percent parameter doesn't exist.app = Flask(__name__)
-
-
-
-                    # Summarizing Formatt
-        return jsonify(success=False,
-                       message="No Percentage Value given in request. " "Please check whether your request is correct.",
-                       response=None), 400
-    else:
-        # choice parameter for the summary type doesn't exist here.
-        return jsonify(success=False,
+                      return jsonify(success=False,
                        message="No Choice given in request. " "Please request along with your choice correctly.",
                        response=None), 400
+    
                        return app
 
 
