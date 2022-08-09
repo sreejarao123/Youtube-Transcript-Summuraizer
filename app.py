@@ -3,7 +3,7 @@ from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, Vide
 from youtube_transcript_api.formatters import TextFormatter
 
 # Flask Imports
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 
 # Gensim Imports
 from gensim.summarization.summarizer import summarize
@@ -30,6 +30,7 @@ from sumy.utils import get_stop_words
 
 from string import punctuation
 from heapq import nlargest
+import os
 
 #waitress import for serving at heroku
 from waitress import serve
@@ -38,6 +39,22 @@ from waitress import serve
 def create_app():
     # Creating Flask Object and returning it.
     app = Flask(__name__)
+
+    # "Punkt" download before nltk tokenization
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        print('Downloading punkt')
+        nltk.download('punkt', quiet=True)
+
+    # "Wordnet" download before nltk tokenization
+    try:
+        nltk.data.find('corpora/wordnet')
+    except LookupError:
+        print('Downloading wordnet')
+        nltk.download('wordnet')
+
+
 
     # Processing Function for below route.
     @app.route('/summarize/')
@@ -340,20 +357,7 @@ def sumy_text_rank_summarize(text_content, percent):
 
 
 if __name__ == '__main__':
-    # "Punkt" download before nltk tokenization
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        print('Downloading punkt')
-        nltk.download('punkt', quiet=True)
-
-    # "Wordnet" download before nltk tokenization
-    try:
-        nltk.data.find('corpora/wordnet')
-    except LookupError:
-        print('Downloading wordnet')
-        nltk.download('wordnet')
-
+    
     # Running Flask Application
 # app.run()
     flask_app = create_app()
