@@ -2,14 +2,17 @@ from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, Vide
     TranscriptsDisabled, NoTranscriptAvailable
 from youtube_transcript_api.formatters import TextFormatter
 
+
 # Flask Imports
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, render_template
 
 # NLTK Imports
 import nltk
 
+# Other Imports
 import os
 
+# Summarizer Import (Our Another File: summarizer.py)
 from summarizer import gensim_summarize, spacy_summarize, nltk_summarize, sumy_lsa_summarize, sumy_luhn_summarize, \
     sumy_text_rank_summarize
 
@@ -43,7 +46,7 @@ def create_app():
         nltk.download("stopwords", quiet=True)
 
     # Processing Function for below route.
-    @app.route('/summarize/')
+    @app.route('/summarize/', methods=['GET'])
     def transcript_fetched_query():
         # Getting argument from the request
         video_id = request.args.get('id')  # video_id of the YouTube Video
@@ -95,7 +98,6 @@ def create_app():
                     return jsonify(success=True,
                                    message="Subtitles for this video was fetched and summarized successfully.",
                                    response=response_list), 200
-
                 # Catching Exceptions
                 except VideoUnavailable:
                     return jsonify(success=False, message="VideoUnavailable: The video is no longer available.",
@@ -142,12 +144,46 @@ def create_app():
                       return jsonify(success=False,
                        message="No Choice given in request. " "Please request along with your choice correctly.",
                        response=None), 400
-    
-                       return app
+                       @app.route('/favicon.ico')
+    # Favicon is stored in static folder, browsers request it to display along with tab title.
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
+                                   mimetype='image/vnd.microsoft.icon')
+
+    @app.route('/')
+    def root_function():
+
+                # Since we have two end points inside root, we are closing root endpoint.
+        # Displaying root.html to the end user
+        return render_template('root.html')
+
+    @app.route('/web/')
+    def summarizer_web():
+        # We are at web.html, online input boxes are there to summarize the given video URL.
+        # Displaying web.html to the end user
+        return render_template('web.html')
+
+    @app.route("/web.css")
+    def styles_root_route():
+        # web.css is stored in templates folder, browsers request it for use inside html page.
+        return send_from_directory(os.path.join(app.root_path, 'templates'), "web.css")
+
+    @app.route("/web.js")
+    def popup_route():
+        # web.js is stored in templates folder, browsers request it for use inside html page.
+        return send_from_directory(os.path.join(app.root_path, 'templates'), "web.js")
+
+    @app.route("/web/yt_icon_rgb.svg")
+    def yt_icon_route():
+        # yt_icon_rgb.svg is stored in static folder, browsers request it for use inside html page.
+        # This SVG Image contains YouTube Logo.
+        return send_from_directory(os.path.join(app.root_path, 'static'), "yt_icon_rgb.svg")
+
+    return app
 
 if __name__ == '__main__':
     
     # Running Flask Application
-# app.run()
+    # app.run()
     flask_app = create_app()
     serve(flask_app, host='0.0.0.0', port=80, debug=True, url_scheme='https')
