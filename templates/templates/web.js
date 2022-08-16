@@ -41,7 +41,7 @@ function initializeSummary() {
             // https://ytsum.herokuapp.com
             // http://127.0.0.1:5000
             // Fetch request to our server. (GET request with arguments received from popup.html
-                        fetch("https://ytsum.herokuapp.com/summarize/?id=" + video_id +
+            fetch("https://ytsum.herokuapp.com/summarize/?id=" + video_id +
                 "&percent=" + percent + "&choice=" + choice)
                 .then(response => response.json()).then(result => {
                 // Result now contains the response in JSON
@@ -49,14 +49,7 @@ function initializeSummary() {
                 process_element.innerHTML = result.message;
                 if (result.success) {
                     // If result was successfully received. Then, parse the result_response JSON
-                    const response_json = (result.response[0]);
-                    /*
-                    // Use the values present in JSON for displaying summary.
-                    text_out_content_element.innerHTML = "Processed Summary: " + response_json.processed_summary
-                        + "<p>Characters in Original Transcript: " + response_json.length_original
-                        + "<br>Characters in Summary: " + response_json.length_summary
-                        + "<br>Sentences in Original Transcript: " + response_json.sentence_original
-                        + "<br>Sentences in Summary: " + response_json.sentence_summary + "</br><br>";*/
+                    const response_json = (result.response);
                     // Use the values present in JSON for displaying summary.
                     text_out_content_element.innerHTML = "<b>Processed Summary:</b> " + response_json.processed_summary
                         + "<p>In your video, there are <b>" + response_json.length_original + "</b> characters in <b>" + response_json.sentence_original + "</b> sentences."
