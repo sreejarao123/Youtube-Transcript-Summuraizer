@@ -16,6 +16,8 @@ summarize_button.disabled = true;
 // Adding EventListeners on both dropdowns to enable button when both dropdowns have selected a valid choice.
 percent_dropdown.addEventListener("click", buttonUpdate);
 choice_dropdown.addEventListener("click", buttonUpdate);
+percent_dropdown.addEventListener("onmousedown", buttonUpdate);
+choice_dropdown.addEventListener("onmousedown", buttonUpdate);
 percent_dropdown.addEventListener("keyup", buttonUpdate);
 choice_dropdown.addEventListener("keyup", buttonUpdate);
 url_input.addEventListener("input", buttonUpdate);
@@ -52,7 +54,7 @@ function initializeSummary() {
             // https://ytsum.herokuapp.com
             // http://127.0.0.1:5000
             // Fetch request to our server. (GET request with arguments received from popup.html
-            fetch("http://127.0.0.1:5000/summarize/?id=" + video_id +
+            fetch("https://ytsum.herokuapp.com/summarize/?id=" + video_id +
                 "&percent=" + percent + "&choice=" + choice)
                 .then(response => response.json()).then(result => {
                 // Result now contains the response in JSON
